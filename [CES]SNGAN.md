@@ -19,11 +19,13 @@ Gan이 학습이 쉽지 않은데, 이 논문에서는 discriminator의 좋은 �
 Lipschitz constant를 제약하는 방식으로 진행됨 -> 원래 있던 기존의 방식보다 쉬운 implementaion만으로도 접근이 용이하다는 특징이 있다  
 
 * Lipschitz 함수란?
+  
   <img width="659" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/ff77ba0a-447d-4e8f-bb1e-1734209e5494">  
+  
   어떠한 함수 f:[a,b] -> R 가 어떠한 상수 M과 [a,b]에 속하는 모든 x,y에 대해서 이 식을 만족하게 만든다  
   다시 말해 **두 점 사이의 거리를 일정 비 이상으로 증가시키지 않는 함수** 라고 정의할 수 있다  
   -> f의 미분계수가 M을 넘어가지 않는다는 것으로 해석 가능 
-## Method  
+## Spectral Normalization    
 GANs is given by  
 
 <img width="123" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/5be589f7-f9c5-4f07-bd6c-c543f3e76fa8">
@@ -53,7 +55,8 @@ $sigmoid(x)=1/1+e^{-x}$ 이기 때문에 f*를 sigmoid에 넣어 풀면 DG*와 �
   <img width="318" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/71a83bce-f82a-499a-bacb-2ad96302d9b5">  
   
   generate의 model의 datasample 하나와 real image의 datasample 하나를 각각 뽑아 그 두 사이의 gradient를 구한다  
-  이 하나의 기울기를 regulation에 넣는다  
+  이 하나의 기울기를 regulation에 넣는다
+    
   -> 실제의 기울기를 넣은 것이기 때문에 위에 설명한 WGAN보단 더 효과적인 학습이 가능함  
   한계 : sample 하나를 뽑아서 학습을 진행하기 때문에 그 sample에 가까운 한정적인 영역안에서는 regulation이 걸리고 나머지의 영역에서는 regulation이 제대로 걸리지 않는 문제가 발생
 
@@ -61,10 +64,17 @@ $sigmoid(x)=1/1+e^{-x}$ 이기 때문에 f*를 sigmoid에 넣어 풀면 DG*와 �
   각 layer의 g의 spectral norm을 제어함으로써 discriminator 함수 f의 Lipschitz constant를 제어하는 것
   
   "Matrix Norm"
+
+  <img width="336" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/ad72d5c1-c99f-4b08-81a8-18593166b88a">
+
   
   <img width="137" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/fbdf60bf-382d-43f8-96d6-212ff85b65cd">  
     
-  <img width="272" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/873d326e-df59-4f9c-aebd-a62a23c682da"> 
+  <img width="272" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/873d326e-df59-4f9c-aebd-a62a23c682da">  
+  
+  (<img width="54" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/86f5e6a6-a3ec-4c5a-97e2-43c983b068b0">는 A의 가장 큰 Single Value)  
+  
+
   
   -> 여기서 p가 2일 때 spectral norm이라고 정의할 수 있고 largistic sigular value값과 일치하는 것을 확인할 수 있다  
     
@@ -76,13 +86,48 @@ $sigmoid(x)=1/1+e^{-x}$ 이기 때문에 f*를 sigmoid에 넣어 풀면 DG*와 �
 
   <img width="305" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/d6d7f759-a685-4daa-8927-58521534144b">  
 
-  sigmoid 함수 일 때 출력 0 or 1  
+  그리고 layer 마다 빠질 수 없는 activation function이 있는데, 제일 많이 쓰는 RELU, LeakyRELU 등은 lipschitz norm이 1인 것을 알 수 있다. 이런 lipschitz norm이 1인 activation function을 쓸 때 다음과 같은 함수 성질을 이용할 수 있다    
     
   <img width="188" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/bd0bca8b-d962-4f2a-96c4-1c71557e4b88"> 에 의거하여
   다음과 같은 수식이 나올 수 있다
 
-  <img width="409" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/15ca8fbc-b043-421a-907a-fb2b76c7ce32">
+  <img width="409" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/15ca8fbc-b043-421a-907a-fb2b76c7ce32">  
 
-  Spectral Noramzliation은 Weight matrix W의 Spectral norm을 정규화하여 <img width="52" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/b3b79efe-094c-4c93-8439-01c8d6b902ba"> 을 만족한다 
+  위의 ||f|| 바로 오른쪽 항들은 단순히 연속적인 layer와 activation function들의 곱을 위의 성질을 이용하여 수식으로 적어논 것이다  
+  그 다음의 항은 activation function a의 Lipschitz norm이 1이므로 생략하여 정리해놓은 것이다  
+  다음은 이전의 값이 g_l의 lipschitz norm인데 이것을 W의 Largest single value라고 정의할 수 있기 때문에 마지막 항과 같이 표현할 수 있다
+  
+  Spectral Noramzliation은 Weight matrix W의 Spectral norm을 정규화하여 <img width="52" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/b3b79efe-094c-4c93-8439-01c8d6b902ba"> 을 만족한다
+  이를 통해서 Lipschitz norm은 위와 같이 bounded 되어있다는 것을 알 수 있다
+  따라서 각 weight matrix인 W의 spectral norm, 즉 W의 largest singular value 값들을 조절해 준다면 D의 함수인 f의 Lipschitz norm에 제한을 걸 수 있게 된다
+
+  <img width="146" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/eb1e8f25-df3f-42ce-ad0f-db8907c8b43b">  
+
+  이 논문에서는 W의 spectral norm이 1이 되도록 nomalize를 해준다
+  그렇다면 모든 layer의 weight matrix을 spectral normalization 해준다면, f의 Lipschitz norm이 1이하로 bounded 되는 것을 알 수 있다
+
+## Gradient Analysis of the Spectrally Normalized Weight  
+위에까지는 spectral normalize에 대한 방법에 대해서 설명을 하였고 이제부터는 이러한 normalize 방법이 어떻게 작용을 하게 되고 어떤 영향을 주게 되는지에 대해서 알아볼 것이다  
+weight matrix W에 대해서 GAN의 목적함수인 V(G,D)의 gradient를 살펴보면 W가 어떻게 학습을 하는지와 spectral normalization이 주는 영향에 대해서도 알아 볼 수 있다  
+
+<img width="364" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/12cd2281-4d9b-4d13-8e5c-a9d7e710f6fd">  
+
+수식으로 본다면 다음과 같지만 수식의 양이 너무 많기 때문에 이렇게만 봐선 이해가 쉽지 않다  
+
+<img width="619" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/ecb334a0-9ac2-4f09-84f6-fa5fa5ce9ab5">  
+
+Chain Rule을 적용하여 풀어쓴 식이다  
+이처럼 풀어쓰게 되면 (c)와 같은 식을 얻을 수 있게 되는데 이제 (c)에서 마지막에 곱해진 미분식을 계산해보면  
+
+
+
+
+
+
+
+
+  
+
+  
 
 
