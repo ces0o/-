@@ -149,7 +149,13 @@ $sigmoid(x)=1/1+e^{-x}$ 이기 때문에 f*를 sigmoid에 넣어 풀면 DG*와 �
   이 말은 현재 가고 있는 방향 외에도 좀 더 다양한 방향을 보게해준다는 것을 뜻한다
   기울기가 같아지면 기울기가 작아지니까 (점점 0으로 수렴) 기울기가 계속 다른 방향으로 나아갈 수 있게 panalty를 준다
 
-  # experiment
+  ## experiment
+
+  <img width="563" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/c5f80e6f-0183-4005-915c-11c78af10c25">  
+
+  그래프에서 보이다 시피 inception score가 고르게 좋게나오는 것을 확인할 수 있다 (Setting 종류에 상관없이)
+
+  
 
   
   
