@@ -123,6 +123,46 @@ $sigmoid(x)=1/1+e^{-x}$ 이기 때문에 f*를 sigmoid에 넣어 풀면 DG*와 �
   이러한 식으로 각 W(l)을 normalize하게 되면 ![image](https://github.com/ces0o/Paper-Review/assets/127365253/70f325b2-904f-4a4d-baff-09c7cda4f9bf)  라는 사실에 의해 ![image](https://github.com/ces0o/Paper-Review/assets/127365253/ca144eb4-c85e-49cf-9c8a-fb3ee49370fc) 가 1로 bound 됨을 알 수 있다
   discriminator의 각 layer을 regularize하기 위해 사용한 spectral norm은 W의 largest singular value이 된다
 
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/801859cb-6f5c-445b-865b-c09a582dae0a)에 대한 계산을 위해 singular value decompostion(SVD)를 진행할 시 계산량이 너무 많다
+  따라서 power interation method를 통해 ![image](https://github.com/ces0o/Paper-Review/assets/127365253/35cd8134-246d-4c50-983f-6cf53e6606e0)를 추정하는 것이 더 효율적이다
+
+* Gradinet Analysis of the Spectrally Normalized Weights
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/8d8f26a6-cfd1-4a4d-a8bd-1d1526c56aa7)
+
+  이 식은 위의 W(SN)식을 한 번 미분한 결과 값이다
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/db717e51-0ce6-4079-831e-36dad520db1a)
+
+  이 식은 chain rule에 의해 미분을 한 값이고 그 결과 값이 위의 식과 비슷한 형태를 띄는 것을 알 수 있다
+  따라서 위의 식을 이 식에 대입을 해주면
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/6b0a1687-108f-4621-8fbc-1d67a22caaa9)
+
+  이러한 식이 완성된다
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/def22bed-38bd-4d4f-b768-c1c6ead4af97)
+
+  위의 식을 설명하자면 앞에 있는 첫 번째 텀은 normalization 하기 전의 텀이다
+  델타가 추가된 텀은 원래 기울기 방향에서 빼주는 역할을 한다
+  현재 output과 델타, 즉 두 개의 방향이 일치할 땐 0값이 도출되게 된다
+  이 말은 현재 가고 있는 방향 외에도 좀 더 다양한 방향을 보게해준다는 것을 뜻한다
+  기울기가 같아지면 기울기가 작아지니까 (점점 0으로 수렴) 기울기가 계속 다른 방향으로 나아갈 수 있게 panalty를 준다
+
+  # experiment
+
+  
+  
+
+
+  
+
+
+  
+
+
+  
+
   
 
 
