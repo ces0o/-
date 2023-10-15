@@ -64,62 +64,83 @@ $sigmoid(x)=1/1+e^{-x}$ 이기 때문에 f*를 sigmoid에 넣어 풀면 DG*와 �
   각 layer의 g의 spectral norm을 제어함으로써 discriminator 함수 f의 Lipschitz constant를 제어하는 것
   
   "Matrix Norm"
+  유클리드 거리
 
-  <img width="336" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/ad72d5c1-c99f-4b08-81a8-18593166b88a">
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/f8fa2f1b-7ee5-4828-8c12-4b771b8bf754)
+
+  수학에서는 유클리드 거리를 계량하는 함수를 노름(norm)이라 한다
+  이 노름의 치역은 음이 아닌 실수로 정의한다
+  노름 개념이 벡터에 쓰이면 벡터 노름, 행렬까지 확장하면 행렬 노름(matrix norm)이라 한다
+  노름은 거리를 일반화하기 때문에 표기법도 유클리드 거리와는 달라진다
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/740e3623-9bf4-4c44-aca2-6dee341e45d3)
+
+  제곱과 제곱근을 사용한 유클리드 노름을 더 일반화해서 정의한 p-노름도 있다
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/fb288813-e18b-428f-97bc-a42473ea640a)
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/532c35d3-a3c6-413d-a9da-ac751f187922)
+
+  연립방정식 $Ax=b$ 에 등장하는 행렬의 곱 $Ax$ 를 이용해서 행렬을 벡터로 바꾼 후 행렬 노름을 다음과 같이 정의한다
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/5c32e7dd-e19c-437a-b9dd-14071961974d)
+
+  여기서 x는 임의의 모든 열 벡터이다
+  열 벡터에 따라 벡터 노름은 달라지므로 행렬 A가 x를 기준으로 Ax를 최대로 증폭하는 비율로써 행렬 노름을 정의한다
+  또한 행렬 노름은 벡터 노름을 바탕으로 정의하르모 p-노름을 강조해서 다음처럼 식을 쓸 수 있다
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/e89abee6-1157-4d45-a0e6-65e0d7162b57)
+
+  ﻿spectral normlization은 각 layer g : h(in) -> h(out)의 spectral norm을 제한하는 것으로 discriminator function f의 lipschitz constant를 조절한다
+  정의에 따라 Lipschitz norm ![image](https://github.com/ces0o/Paper-Review/assets/127365253/b6d2fccc-b808-400c-8929-4410f4824674)은 ![image](https://github.com/ces0o/Paper-Review/assets/127365253/46497ae7-013c-4ed6-96fd-b874d7f04776)와 동일한데 여기서 ![image](https://github.com/ces0o/Paper-Review/assets/127365253/acc7bf56-dff6-464f-b344-4f66926da848)는 matrix A의 spectral norm이다 (L2 matrix norm of A)
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/27b57dc1-a958-45d2-8879-848f419ea80a)
+
+  이는 A의 largest singular value와 동일하다
+  따라서 linear layer g(h)=Wh에 대해 norm은
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/d6253ac8-0b6c-48c4-b3c1-60def1e77578)
+
+  로 주어진다
+  
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/669aa8bc-65c4-488d-b5eb-569d0c50c566)는 input x를 넣었을 때 neural network에 의해 만들어지는 discriminator로 다음과 같은 식으로 정의 될 수 있다
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/200815c3-f613-4428-afa0-35783d9b0077)
+
+  여기서 a(L)은 activation function을 의미한다 만약 a의 lipschitz의 값이 sigmoid와 같이 1이라면 다음의 식을 적용할 수 있다
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/b32a0671-d17b-4eb2-bddb-417369cebf5a)
+
+  이 식을 앞에 정의한 함수 f에 적용시키면
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/c0e571b3-60b5-4692-9b97-1485a2a9ccc7)
+
+  이러한 식으로 되고 결국은 F의 lipschitz의 bound를 찾을 수 있다
+  spectral normlization은 wight matrix W의 spectral norm을 normalize하여 lipschitz constraint ![image](https://github.com/ces0o/Paper-Review/assets/127365253/2ce7b3d4-992a-46ff-a5db-2f3d83942b05) =1을 만족하게 된다
+
+  ![image](https://github.com/ces0o/Paper-Review/assets/127365253/eba0c621-be64-44c0-9385-f853a53ec6d9)
+
+  이러한 식으로 각 W(l)을 normalize하게 되면 ![image](https://github.com/ces0o/Paper-Review/assets/127365253/70f325b2-904f-4a4d-baff-09c7cda4f9bf)  라는 사실에 의해 ![image](https://github.com/ces0o/Paper-Review/assets/127365253/ca144eb4-c85e-49cf-9c8a-fb3ee49370fc) 가 1로 bound 됨을 알 수 있다
+  discriminator의 각 layer을 regularize하기 위해 사용한 spectral norm은 W의 largest singular value이 된다
 
   
-  <img width="137" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/fbdf60bf-382d-43f8-96d6-212ff85b65cd">  
-    
-  <img width="272" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/873d326e-df59-4f9c-aebd-a62a23c682da">  
+
+
+
+
+
+
+
+
+
+
   
-  (<img width="54" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/86f5e6a6-a3ec-4c5a-97e2-43c983b068b0">는 A의 가장 큰 Single Value)  
+
+
+
+
   
-
   
-  -> 여기서 p가 2일 때 spectral norm이라고 정의할 수 있고 largistic sigular value값과 일치하는 것을 확인할 수 있다  
-    
-  g : h(in) -> h(out) by definition
-
-  <img width="265" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/4a3090f5-cf9b-47fa-9851-d1dcdd5aa7c5">  
-
-  g(h) = Wh 즉 linear 함수일 때
-
-  <img width="305" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/d6d7f759-a685-4daa-8927-58521534144b">  
-
-  그리고 layer 마다 빠질 수 없는 activation function이 있는데, 제일 많이 쓰는 RELU, LeakyRELU 등은 lipschitz norm이 1인 것을 알 수 있다. 이런 lipschitz norm이 1인 activation function을 쓸 때 다음과 같은 함수 성질을 이용할 수 있다    
-    
-  <img width="188" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/bd0bca8b-d962-4f2a-96c4-1c71557e4b88"> 에 의거하여
-  다음과 같은 수식이 나올 수 있다
-
-  <img width="409" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/15ca8fbc-b043-421a-907a-fb2b76c7ce32">  
-
-  위의 ||f|| 바로 오른쪽 항들은 단순히 연속적인 layer와 activation function들의 곱을 위의 성질을 이용하여 수식으로 적어논 것이다  
-  그 다음의 항은 activation function a의 Lipschitz norm이 1이므로 생략하여 정리해놓은 것이다  
-  다음은 이전의 값이 g_l의 lipschitz norm인데 이것을 W의 Largest single value라고 정의할 수 있기 때문에 마지막 항과 같이 표현할 수 있다
-  
-  Spectral Noramzliation은 Weight matrix W의 Spectral norm을 정규화하여 <img width="52" alt="image" src="https://github.com/Artinto/2023-2_study/assets/127365253/b3b79efe-094c-4c93-8439-01c8d6b902ba"> 을 만족한다
-  이를 통해서 Lipschitz norm은 위와 같이 bounded 되어있다는 것을 알 수 있다
-  따라서 각 weight matrix인 W의 spectral norm, 즉 W의 largest singular value 값들을 조절해 준다면 D의 함수인 f의 Lipschitz norm에 제한을 걸 수 있게 된다
-
-  <img width="146" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/eb1e8f25-df3f-42ce-ad0f-db8907c8b43b">  
-
-  이 논문에서는 W의 spectral norm이 1이 되도록 nomalize를 해준다
-  그렇다면 모든 layer의 weight matrix을 spectral normalization 해준다면, f의 Lipschitz norm이 1이하로 bounded 되는 것을 알 수 있다
-
-## Gradient Analysis of the Spectrally Normalized Weight  
-위에까지는 spectral normalize에 대한 방법에 대해서 설명을 하였고 이제부터는 이러한 normalize 방법이 어떻게 작용을 하게 되고 어떤 영향을 주게 되는지에 대해서 알아볼 것이다  
-weight matrix W에 대해서 GAN의 목적함수인 V(G,D)의 gradient를 살펴보면 W가 어떻게 학습을 하는지와 spectral normalization이 주는 영향에 대해서도 알아 볼 수 있다  
-
-<img width="364" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/12cd2281-4d9b-4d13-8e5c-a9d7e710f6fd">  
-
-수식으로 본다면 다음과 같지만 수식의 양이 너무 많기 때문에 이렇게만 봐선 이해가 쉽지 않다  
-
-<img width="619" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/ecb334a0-9ac2-4f09-84f6-fa5fa5ce9ab5">  
-
-Chain Rule을 적용하여 풀어쓴 식이다  
-이처럼 풀어쓰게 되면 (c)와 같은 식을 얻을 수 있게 되는데 이제 (c)에서 마지막에 곱해진 미분식을 계산해보면  
-
-
 
 
 
