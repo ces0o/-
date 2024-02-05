@@ -184,15 +184,58 @@ Autoencoder는 주로 차원 축소 및 특징 추출을 위해 사용되는 인
         <img width="418" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/8d12f767-32cb-4973-80ee-cc711bca68be">  
 
         [출처](https://yhyun225.tistory.com/21)
-   
+        
         $$L_1 = W_1* x^T$$
-
-        $$L_2 = W_2 * L_1 = W2*W1*x^T$$  
+   
+        $$L_2 = W_2 * L_1 = W_2*W_1*x^T$$
+        
         
         * 그러면, PCA에 다층 퍼셉트론처럼 비선형성을 추가할 수 없을까?
 
           <img width="443" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/effd5b97-0f24-4f59-b9a3-ab0f98da04cf">  
-
+   
+         * Pretraining
+           * 딥러닝에서 초기값 설정이 매우 중요
+           * 당시에 학습이 잘 되지 않았던 것은 우리가 초기화를 멍청한 방법으로 했다고 힐튼 교수님이 지적
+           * 제한된 볼츠만 머신(Restricted Boltzmann machine)
+   
+             <img width="160" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/0c408d22-6968-4a72-9b80-efaadcaeab13">  
+   
+             * Visible, Hidden의 두개의 Layer로, 두 레이어들이 양방향으로 전부 연결된(Fully Connected) 모델
+             * 훈련과정
+               1. Forward : Input Data에 가중치를 이용해 Output을 만듦
+               2. Backward : Ouput에 같은 가중치를 이용해 Input을 재생성(Recreate)
+               3. 원래의 Input Data와 재생성된 Input의 값을 비교해 두 값이 최대한 비슷해지도록 가중치 업데이트
+             * Deep Belif Network(DBN)
+               <img width="340" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/a797be82-0c31-40e8-97d8-6cf7d6828c57">
+   
+               [출처] (https://www.analyticsvidhya.com/blog/2022/03/an-overview-of-deep-belief-network-dbn-in-deep-learning/)
+               * RBM을 이용해 가중치를 초기화한 신경망
+               * 참고(A Fast Learning Algorithm Deep Belief Nets - Restricted Boltzmann Machine(RBM))
+               * https://www.cs.toronto.edu/~hinton/absps/fastnc.pdf
+               * 모두를 위한 딥러닝 시즌 1 https://www.youtube.com/watch?v=4rC0sWrp3Uw&list=PLlMkM4tgfjnLSOjrEJN31gZATbcj_MpUm&index=32
+   
+            * 현재에서 사용은?
+              * 2010년의 Xavier 초기화 등장
+   
+                $$N(0, var=2/(n(in)+n(out)))$$
+                
+                * n(in) : 가중치에 입력으로 들어오는 뉴런의 수
+                * n(out) : 가중치에서 출력으로 나가는 뉴런의 수
+                * 입력 데이터와 출력 데이터 수에 맞게 가중치 행렬 생성 시 가우시안 분포에서 임의값을 추출하고, 그 값을 입력 데이터 수의 제곱근으로 나누어 사용
+                * 따라서 가우시안 분포의 분산은 입력 뉴런의 수와 출력 뉴런의 수에 따라 동적으로 조절된다
+                * Activation Function으로 Sigmoid나 Tanh 함수 사용 시 사용
+              * 2015년의 He’s 초기화 등장
+   
+                $$N(0, var=2/((1+a^2)*n(in))$$
+   
+                * a : ReLU 또는 Leaky ReLU의 음수부분의 기울기 (기본값 = 0)
+                * 입력데이터 수의 절반의 제곱근으로 나누어서 사용
+                * ReLU가 활성화 함수로 많이 사용되면서 활성화 값이 0이하인 경우에 발생하는 ReLU의 특징을 반영하기 위해 등장
+                * Activation Function으로 ReLU 함수 사용 시 사용
+   
+                <img width="443" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/effd5b97-0f24-4f59-b9a3-ab0f98da04cf">   
+   
           * Fine-tuning이 backpropagation을 통한 학습 과정을 의미
           * 특징 (Self-Supervised Learning)
             1. 자동으로 특징 학습
@@ -215,7 +258,9 @@ Autoencoder는 주로 차원 축소 및 특징 추출을 위해 사용되는 인
 
 * y축(-1 ~ 3)
 
-  <img width="466" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/0d7be675-b4fd-47bc-8662-e06b08e097df">
+  <img width="466" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/0d7be675-b4fd-47bc-8662-e06b08e097df">  
+
+  Auto-Encoder는 선형의 Manifold(평면)을 학습하는 것이 아니라 곡면을 학습한다
 ## Result
 * Image Reconstruction
 
