@@ -222,8 +222,36 @@ Autoencoder는 주로 차원 축소 및 특징 추출을 위해 사용되는 인
   <img width="355" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/e25149cb-9e77-4257-a31a-d381a3500d62">  
 
   A: Strokes Reconstruction, B: MNIST Reconstruction, C: Face Reconstruction
-    A(Strokes Reconstruction)
-      * (28×28)-400–200–100–50–25–6 | 6-25-50-100-200-400-(28x28)로 생성
+   A(Strokes Reconstruction)
+    * (28×28)-400–200–100–50–25–6 | 6-25-50-100-200-400-(28x28)로 생성
+    * 6개의 Logistic PCA를 통한 생성
+    * 18개의 logistic과 standard PCA를 이용한 학습
+    * MSE는 각각 1.44, 7.64 2.45, 5.90으로 Auto-Encoder가 가장 뛰어난 성능  
+
+   B(MNIST Reconstruction)
+    * 784 - 1000 - 500 - 250 - 30의 Auto-endcoder, 30차원의 logstic PCA와 standard PCA의 결과
+    * 각각 3.00, 8.01, 13.87의 average squared error  
+ 
+   C(Fase Reconstrucition)
+    * 625 - 2000 - 1000 - 500 -30차원의 Auto-encoder와 PCA의 결과
+    * 126, 135의 average squared error
+
+  Mnist
+
+  <img width="352" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/e3603904-8775-464a-ac1f-38ab05e6effc">  
+
+  A: First 2 PCA Components by PCA, B: 784–1000–500–250–2 autoencoder
+    * randomly initialized backpropagation 1.6% error
+    * 784-500-500-2000-10 pretrained는 1.2%
+   * Doucument Retrieval
+
+     <img width="360" alt="image" src="https://github.com/ces0o/Paper-Review/assets/127365253/128237b9-a806-4a0a-b39a-f594a1b4a421">  
+
+     A: Document Retrieval Accuracy, B: LSA, C: 2000–500–250–125–2 autoencoder
+     * 잠재 의미 분석(Latent Semantic Analysis, LSA) : 텍스트 데이터의 차원 축소 및 문서와 단어 사이의 잠재적인 의미 추출
+
+
+  
 
 
 
